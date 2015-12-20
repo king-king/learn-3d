@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        canvas {
+            width: 500px;
+            height: 500px;
+            position: absolute;
+        }
+    </style>
+</head>
+<canvas width="500" height="500"></canvas>
+<script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script>
+    (function () {
+        var canvas = document.querySelector( "canvas" );
+        var gl = canvas.getContext( "webgl" );
+
+        gl.clearColor( 0 , 0 , 0 , 1 );
+        gl.clear( gl.COLOR_BUFFER_BIT );
+
+        canvas.style.left = (document.body.offsetWidth - 500) / 2 + "px";
+        canvas.style.top = (document.body.offsetHeight - 500) / 2 + "px";
+
+        var v_shader =
+                "attribute vec4 position;\n" +
+                "void main(){\n" +
+                "gl_Position = position;\n" +
+                "gl_PointSize = 10.0;\n" +
+                "}\n";
+
+        var f_shader =
+                "precision mediump float;\n" +
+                "uniform vec4 color;\n" +
+                "void main(){\n" +
+                "gl_FragColor = color;\n" +
+                "}\n";
+
+        if ( !initShaders( gl , v_shader , f_shader ) ) {
+            console.log( "fail to init shader" );
+        } else {
+            var position = gl.getAttribLocation( gl.program , "position" );
+            var color = gl.getUniformLocation( gl.program , "color" );
+
+            canvas.onclick = function ( e ) {
+                var x = e.pageX - canvas.offsetLeft ,
+                        y = e.pageY - canvas.offsetTop;
+                gl.clear( gl.COLOR_BUFFER_BIT );
+                console.log( x , y , (x - 250) / 250 , (250 - y) / 250 , 0 );
+                gl.vertexAttrib3f( position , (x - 250) / 250 , (250 - y) / 250 , 0 );
+                gl.uniform4f( color , x / 500 , y / 500 , 0 , 1 );
+
+                gl.drawArrays( gl.POINTS , 0 , 1 );
+
+            }
+        }
+
+
+    })();
+</script>
+<body>
+
+</body>
+</html>
