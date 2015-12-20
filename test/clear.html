@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>clear</title>
+    <style>
+        canvas {
+            width: 500px;
+            height: 500px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: -250px 0 0 -250px;
+        }
+    </style>
+</head>
+<body>
+<canvas width="500" height="500"></canvas>
+<script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script>
+    (function () {
+        var canvas = document.querySelector( "canvas" );
+        var gl = canvas.getContext( "webgl" );
+
+        gl.clearColor( 1.0 , 0.0 , 0.0 , 1.0 );
+        gl.clear( gl.COLOR_BUFFER_BIT );
+
+
+    })();
+</script>
+</body>
+</html>
