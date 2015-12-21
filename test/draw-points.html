@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>points</title>
+    <style>
+        canvas {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<canvas width="500" height="500"></canvas>
+<script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script>
+    (function () {
+        var canvas = document.querySelector( "canvas" );
+        var gl = canvas.getContext( "webgl" );
+
+        var v_shader =
+                "attribute vec4 position;\n" +
+                "void main(){\n" +
+                "gl_Position = position;\n" +
+                "  gl_PointSize = 10.0;\n" +
+                "}\n";
+        var f_shader =
+                "void main(){\n" +
+                "gl_FragColor = vec4(1.0,0.0,0.0,1.0);\n" +
+                "}\n";
+        if ( initShaders( gl , v_shader , f_shader ) ) {
+            gl.clearColor( 0 , 0 , 0 , 1 );
+            gl.clear( gl.COLOR_BUFFER_BIT );
+
+            var vertices = new Float32Array( [
+                0.0 , 0.5 ,
+                -0.5 , -0.5 ,
+                0.5 , -0.5
+            ] );
+            var vbuffer = gl.createBuffer();
+            gl.bindBuffer( gl.ARRAY_BUFFER , vbuffer );
+            gl.bufferData( gl.ARRAY_BUFFER , vertices , gl.STATIC_DRAW );
+            var position = gl.getAttribLocation( gl.program , "position" );
+
+            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , 0 , 0 );
+
+            gl.enableVertexAttribArray( position );
+
+            gl.drawArrays( gl.POINTS , 0 , 3 );
+
+        }
+    })();
+</script>
+</body>
+</html>

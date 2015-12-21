@@ -23,13 +23,14 @@
 
         var canvas = document.querySelector( "canvas" );
         var gl = canvas.getContext( "webgl" ) || canvas.getContext( "experimental-webgl" );
-
+        gl.clearColor( 0.0 , 0.0 , 0.0 , 1.0 );
+        gl.clear( gl.COLOR_BUFFER_BIT );
 
         // 顶点着色器
         var v_shader =
                 "void main(){\n" +
-                "   gl_Position=vec4(0.0,0.0,0.0,1.0);\n" +
-                "   gl_PointSize=20.0;\n" +
+                "   gl_Position = vec4( 0.5 , 0.0 , 0.0 , 1.0 );\n" +
+                "   gl_PointSize = 20.0;\n" +
                 "}\n";
         var f_shader =
                 "void main(){\n" +
@@ -39,8 +40,6 @@
         if ( !initShaders( gl , v_shader , f_shader ) ) {
             console.log( "fail to init shader" );
         } else {
-            gl.clearColor( 0.0 , 0.0 , 0.0 , 1.0 );
-            gl.clear( gl.COLOR_BUFFER_BIT );
             gl.drawArrays( gl.POINTS , 0 , 1 );
         }
 
