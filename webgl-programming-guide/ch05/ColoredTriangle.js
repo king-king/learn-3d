@@ -23,13 +23,13 @@ function main() {
 
     // Get the rendering context for WebGL
     var gl = getWebGLContext( canvas );
-    if ( ! gl ) {
+    if ( !gl ) {
         console.log( 'Failed to get the rendering context for WebGL' );
         return;
     }
 
     // Initialize shaders
-    if ( ! initShaders( gl , VSHADER_SOURCE , FSHADER_SOURCE ) ) {
+    if ( !initShaders( gl , VSHADER_SOURCE , FSHADER_SOURCE ) ) {
         console.log( 'Failed to intialize shaders.' );
         return;
     }
@@ -55,14 +55,14 @@ function initVertexBuffers( gl ) {
     var verticesColors = new Float32Array( [
         // Vertex coordinates and color
         0.0 , 0.5 , 1.0 , 0.0 , 0.0 ,
-        - 0.5 , - 0.5 , 0.0 , 1.0 , 0.0 ,
-        0.5 , - 0.5 , 0.0 , 0.0 , 1.0
+        -0.5 , -0.5 , 0.0 , 1.0 , 0.0 ,
+        0.5 , -0.5 , 0.0 , 0.0 , 1.0
     ] );
     var n = 3;
 
     // Create a buffer object
     var vertexColorBuffer = gl.createBuffer();
-    if ( ! vertexColorBuffer ) {
+    if ( !vertexColorBuffer ) {
         console.log( 'Failed to create the buffer object' );
         return false;
     }
@@ -76,7 +76,7 @@ function initVertexBuffers( gl ) {
     var a_Position = gl.getAttribLocation( gl.program , 'a_Position' );
     if ( a_Position < 0 ) {
         console.log( 'Failed to get the storage location of a_Position' );
-        return - 1;
+        return -1;
     }
     gl.vertexAttribPointer( a_Position , 2 , gl.FLOAT , false , FSIZE * 5 , 0 );
     gl.enableVertexAttribArray( a_Position );  // Enable the assignment of the buffer object
@@ -85,7 +85,7 @@ function initVertexBuffers( gl ) {
     var a_Color = gl.getAttribLocation( gl.program , 'a_Color' );
     if ( a_Color < 0 ) {
         console.log( 'Failed to get the storage location of a_Color' );
-        return - 1;
+        return -1;
     }
     gl.vertexAttribPointer( a_Color , 3 , gl.FLOAT , false , FSIZE * 5 , FSIZE * 2 );
     gl.enableVertexAttribArray( a_Color );  // Enable the assignment of the buffer object
