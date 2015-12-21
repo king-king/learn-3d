@@ -19,11 +19,12 @@
         var gl = canvas.getContext( "webgl" );
 
         var v_shader =
-                "attribute vec4 position;\n" +
                 "attribute vec4 a_color;\n" +
+                "attribute vec4 position;\n" +
                 "varying vec4 color;\n" +
                 "void main(){\n" +
                 "   gl_Position = position;\n" +
+                "   color = a_color;" +
                 "   gl_PointSize = 10.0;\n" +
                 "}\n";
         var f_shader =
