@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rect</title>
+    <style>
+        canvas {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<canvas width="500" height="500"></canvas>
+<script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script>
+    (function () {
+
+        var canvas = document.querySelector( "canvas" );
+        var gl = canvas.getContext( "webgl" );
+
+        gl.clearColor( 0 , 0 , 0 , 1 );
+        gl.clear( gl.COLOR_BUFFER_BIT );
+
+        var v_shader =
+                "attribute vec4 position;\n" +
+                "attribute vec4 v_color;\n" +
+                "varying vec4 color;\n" +
+                "void main(){\n" +
+                "   gl_Position = position;\n" +
+                "   gl_PointSize = 10.0;" +
+                "   color = v_color;\n" +
+                "}\n";
+
+        var f_shader =
+                "precision mediump float;\n" +
+                "varying vec4 color;\n" +
+                "void main(){\n" +
+                "   gl_FragColor = color;\n" +
+                "}\n";
+
+        if ( initShaders( gl , v_shader , f_shader ) ) {
+            var data = new Float32Array( [
+                0.5 , 0.5 , 1 , 0 , 0 ,
+                0.5 , -0.5 , 0 , 1 , 0 ,
+                -0.5 , -0.5 , 0 , 0 , 1 ,
+                -0.5 , 0.5 , 1 , 1 , 1
+            ] );
+            var buffer = gl.createBuffer();
+            var position = gl.getAttribLocation( gl.program , "position" );
+            var v_color = gl.getAttribLocation( gl.program , "v_color" );
+            var SIZE = data.BYTES_PER_ELEMENT;
+
+            gl.bindBuffer( gl.ARRAY_BUFFER , buffer );
+            gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
+            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , 5 * SIZE , 0 );
+            gl.enableVertexAttribArray( position );
+
+            gl.vertexAttribPointer( v_color , 3 , gl.FLOAT , false , 5 * SIZE , 2 * SIZE );
+            gl.enableVertexAttribArray( v_color );
+
+            gl.drawArrays( gl.TRIANGLE_FAN , 0 , 4 );
+
+        }
+
+    })();
+</script>
+</body>
+</html>
