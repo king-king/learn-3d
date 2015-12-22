@@ -16,6 +16,8 @@
 <script>
     (function () {
 
+        var s = new Date();
+
         var canvas = document.querySelector( "canvas" );
         var gl = canvas.getContext( "webgl" );
 
@@ -60,6 +62,8 @@
             gl.enableVertexAttribArray( v_color );
 
             gl.drawArrays( gl.TRIANGLE_FAN , 0 , 4 );
+
+            console.log( new Date() - s )
 
         }
 
