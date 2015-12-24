@@ -17,7 +17,6 @@
     (function () {
         var canvas = document.querySelector( "canvas" );
         var gl = canvas.getContext( "webgl" );
-
         var v_shader =
                 "attribute vec4 position;\n" +
                 "attribute vec4 v_color;\n" +
@@ -25,7 +24,6 @@
                 "void main(){\n" +
                 "   gl_Position = position;\n" +
                 "   color = v_color;\n" +
-                "   gl_PointSize = 10.0;\n" +
                 "}\n";
         var f_shader =
                 "precision mediump float;\n" +
@@ -37,25 +35,27 @@
         if ( initShaders( gl , v_shader , f_shader ) ) {
             gl.clearColor( 0 , 0 , 0 , 1 );
             gl.clear( gl.COLOR_BUFFER_BIT );
-            var buffer = gl.createBuffer();
-            var data = new Float32Array( [
-                0.5 , 0.5 , 1 , 0 , 0 ,
-                0.5 , -0.5 , 1 , 1 , 0 ,
-                -0.5 , -0.5 , 1 , 1 , 1
-            ] );
-            var SIZE = data.BYTES_PER_ELEMENT;
             var position = gl.getAttribLocation( gl.program , "position" );
             var v_color = gl.getAttribLocation( gl.program , "v_color" );
+            var data = new Float32Array( [
+                0 , 0 , 1 , 0 , 0 ,
+                0.5 , 0.3 , 0 , 1 , 0 ,
+                0.5 , -0.5 , 0 , 1 , 0 ,
+                -0.5 , -0.5 , 0 , 0 , 1 ,
+                -0.5 , 0.5 , 0 , 0 , 0
+            ] );
+            var buffer = gl.createBuffer();
+            var SIZE = data.BYTES_PER_ELEMENT;
+
             gl.bindBuffer( gl.ARRAY_BUFFER , buffer );
             gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
-
             gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , 5 * SIZE , 0 );
             gl.vertexAttribPointer( v_color , 3 , gl.FLOAT , false , 5 * SIZE , 2 * SIZE );
-
             gl.enableVertexAttribArray( position );
             gl.enableVertexAttribArray( v_color );
 
-            gl.drawArrays( gl.TRIANGLES , 0 , 3 );
+            gl.drawArrays( gl.LINE_LOOP , 0 , 5 );
+
 
         }
 
