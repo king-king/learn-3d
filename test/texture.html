@@ -21,20 +21,20 @@
 
         var v_shader =
                 "attribute vec4 position;\n" +
-                "attribute vec4 v_tex_position;\n" +
-                "varying vec4 tex_position;\n" +
+                "attribute vec2 v_tex_position;\n" +
+                "varying vec2 tex_position;\n" +
                 "void main(){\n" +
                 "   gl_Position = position;\n" +
                 "   tex_position = v_tex_position;\n" +
                 "}\n";
 
         var f_shader =
-                "precision mediump float;\n" +
-                "uniform sampler2D sampler;\n" +
-                "varying vec4 tex_position;\n" +
-                "void main(){\n" +
-                "   gl_FragColor = texture2D(sampler , tex_position);\n" +
-                "}\n";
+                'precision mediump float;\n' +
+                'uniform sampler2D sampler;\n' +
+                'varying vec2 tex_position;\n' +
+                'void main() {\n' +
+                '  gl_FragColor = texture2D(sampler, tex_position);\n' +
+                '}\n';
 
         if ( initShaders( gl , v_shader , f_shader ) ) {
             var position = gl.getAttribLocation( gl.program , "position" );
@@ -59,7 +59,7 @@
             var img = new Image();
             img.src = "img/star.jpg";
             img.onload = function () {
-                gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL );
+                gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , 1 );
                 gl.activeTexture( gl.TEXTURE0 );
                 gl.bindTexture( gl.TEXTURE_2D , texture );
                 gl.texParameteri( gl.TEXTURE_2D , gl.TEXTURE_MIN_FILTER , gl.LINEAR );
