@@ -42,7 +42,8 @@
                 0.5 , 0.3 , 0 , 1 , 0 ,
                 0.5 , -0.5 , 0 , 1 , 0 ,
                 -0.5 , -0.5 , 0 , 0 , 1 ,
-                -0.5 , 0.5 , 0 , 0 , 0
+                -0.5 , 0.5 , 0 , 0 , 0 ,
+                0 , 0.5 , 0 , 0 , 0
             ] );
             var buffer = gl.createBuffer();
             var SIZE = data.BYTES_PER_ELEMENT;
@@ -54,7 +55,9 @@
             gl.enableVertexAttribArray( position );
             gl.enableVertexAttribArray( v_color );
 
-            gl.drawArrays( gl.LINE_LOOP , 0 , 5 );
+            gl.texSubImage2D()
+
+            gl.drawArrays( gl.TRIANGLE_FAN , 0 , 6 );
 
 
         }
