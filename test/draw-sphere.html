@@ -21,8 +21,9 @@
 
         var v_shade =
                 "attribute vec4 position;\n" +
+                "uniform mat4 matrix;\n" +
                 "void main(){\n" +
-                "   gl_Position = position;\n" +
+                "   gl_Position = matrix * position;\n" +
                 "}\n";
         var f_shader =
                 "precision mediump float;\n" +
@@ -81,14 +82,85 @@
             ] );
             var buffer = gl.createBuffer();
             var position = gl.getAttribLocation( gl.program , "position" );
+            var matrix = gl.getUniformLocation( gl.program , "matrix" );
             var size = data.BYTES_PER_ELEMENT;
+            var curMatrix = [ 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 ];
             gl.bindBuffer( gl.ARRAY_BUFFER , buffer );
             gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
             gl.vertexAttribPointer( position , 3 , gl.FLOAT , false , 3 * size , 0 );
             gl.enableVertexAttribArray( position );
-
+            // [ 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 ]
+            gl.uniformMatrix4fv( matrix , false , curMatrix );
             gl.drawArrays( gl.LINES , 0 , 60 );
+            onDrag( canvas , {
+                onMove : function ( dx , dy ) {
+                    var s = ( Math.abs( dx ) + Math.abs( dy )) / 3.5;
+                    var mat = rotate3dM( dy , -dx , 0 , s );
+                    gl.clear( gl.COLOR_BUFFER_BIT );
+                    curMatrix = mul( mat , curMatrix );
+                    console.log( curMatrix );
 
+                    gl.uniformMatrix4fv( matrix , false , curMatrix );
+                    gl.drawArrays( gl.LINES , 0 , 60 );
+                }
+            } );
+        }
+
+
+        function bindEvent( el , type , func ) {
+            el.addEventListener( type , func );
+            return {
+                remove : function () {
+                    el.removeEventListener( type , func );
+                }
+            }
+        }
+
+        function onDrag( el , args ) {
+            var prex , prey;
+            bindEvent( el , "mousedown" , function ( e ) {
+                prex = e.pageX;
+                prey = e.pageY;
+                var moveH = bindEvent( document , "mousemove" , function ( e ) {
+                    var dx = e.pageX - prex;
+                    var dy = e.pageY - prey;
+                    args.onMove && args.onMove( dx , dy );
+                    prex = e.pageX;
+                    prey = e.pageY;
+                } );
+                var endH = bindEvent( document , "mouseup" , function () {
+                    moveH.remove();
+                    endH.remove();
+                } );
+            } );
+        }
+
+        function rotate3dM( x , y , z , a ) {
+            a = a * Math.PI / 180;
+            var cosa = Math.cos( a ) , sina = Math.sin( a );
+            var r = Math.sqrt( x * x + y * y + z * z );
+            x /= r;
+            y /= r;
+            z /= r;
+            return [
+                1 + (1 - cosa) * ( x * x - 1 ) , z * sina + x * y * (1 - cosa) , -y * sina + x * z * (1 - cosa) , 0 ,
+                -z * sina + x * y * (1 - cosa) , 1 + (1 - cosa) * (y * y - 1) , x * sina + y * z * (1 - cosa) , 0 ,
+                y * sina + x * z * (1 - cosa) , -x * sina + y * z * (1 - cosa) , 1 + (1 - cosa) * (z * z - 1) , 0 ,
+                0 , 0 , 0 , 1
+            ]
+        }
+
+        function mul( m1 , m2 ) {
+            var re = [];
+            for ( var r = 0; r < 4; r++ ) {
+                for ( var c = 0; c < 4; c++ ) {
+                    re[ r * 4 + c ] = 0;
+                    for ( var k = 0; k < 4; k++ ) {
+                        re[ r * 4 + c ] += m1[ r * 4 + k ] * m2[ k * 4 + c ];
+                    }
+                }
+            }
+            return re;
         }
 
 
