@@ -89,23 +89,31 @@
             gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
             gl.vertexAttribPointer( position , 3 , gl.FLOAT , false , 3 * size , 0 );
             gl.enableVertexAttribArray( position );
-            // [ 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 ]
             gl.uniformMatrix4fv( matrix , false , curMatrix );
             gl.drawArrays( gl.LINES , 0 , 60 );
+
+//            requestAnimate( function () {
+//                rotateObj( 1 , -1 );
+//            } );
+
             onDrag( canvas , {
                 onMove : function ( dx , dy ) {
-                    var s = ( Math.abs( dx ) + Math.abs( dy )) / 3.5;
-                    var mat = rotate3dM( dy , -dx , 0 , s );
-                    gl.clear( gl.COLOR_BUFFER_BIT );
-                    curMatrix = mul( mat , curMatrix );
-                    console.log( curMatrix );
-
-                    gl.uniformMatrix4fv( matrix , false , curMatrix );
-                    gl.drawArrays( gl.LINES , 0 , 60 );
+                    if ( dx || dy ) {
+                        rotateObj( dx , dy );
+                    }
                 }
             } );
         }
 
+        function rotateObj( dx , dy ) {
+            var s = ( Math.abs( dx ) + Math.abs( dy )) / 3.5;
+//            var s = dx * dy / 2;
+            var t_matrix = rotate3dM( dy , -dx , 0 , s );
+            gl.clear( gl.COLOR_BUFFER_BIT );
+            curMatrix = combine( t_matrix , curMatrix );
+            gl.uniformMatrix4fv( matrix , false , curMatrix );
+            gl.drawArrays( gl.LINES , 0 , 60 );
+        }
 
         function bindEvent( el , type , func ) {
             el.addEventListener( type , func );
@@ -163,7 +171,35 @@
             return re;
         }
 
+        function combine() {
+            var result = [
+                1 , 0 , 0 , 0 ,
+                0 , 1 , 0 , 0 ,
+                0 , 0 , 1 , 0 ,
+                0 , 0 , 0 , 1
+            ];
+            for ( var i = 0; i < arguments.length; i++ ) {
+                result = mul( result , arguments[ i ] );
+            }
+            return result;
+        }
 
+        function requestAnimate( keyframe ) {
+            var id;
+
+            function f() {
+                keyframe();
+                clearTimeout( id );
+                id = setTimeout( arguments.callee , 20 );
+            }
+
+            f();
+            return {
+                destroy : function () {
+                    clearTimeout( id );
+                }
+            }
+        }
     })();
 </script>
 </body>
