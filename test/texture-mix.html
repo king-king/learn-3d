@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Texture-mix</title>
+    <style>
+        canvas {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<canvas width="500" height="500"></canvas>
+<script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script>
+    (function () {
+
+        var canvas = document.querySelector( "canvas" );
+        var gl = canvas.getContext( "webgl" );
+
+        var v_shader =
+                "attribute vec4 position;\n" +
+                "attribute vec2 v_tex_position;\n" +
+                "varying vec2 tex_position;\n" +
+                "void main(){\n" +
+                "   gl_Position = position;\n" +
+                "   tex_position = v_tex_position;\n" +
+                "}\n";
+
+        var f_shader =
+                'precision mediump float;\n' +
+                'uniform sampler2D sampler;\n' +
+                'uniform sampler2D sampler2;\n' +
+                'varying vec2 tex_position;\n' +
+                'void main() {\n' +
+                '   gl_FragColor = (texture2D(sampler, tex_position)+texture2D(sampler2, tex_position))/2.0;\n' +
+                '}\n';
+
+        if ( initShaders( gl , v_shader , f_shader ) ) {
+            var position = gl.getAttribLocation( gl.program , "position" );
+            var v_tex_position = gl.getAttribLocation( gl.program , "v_tex_position" );
+            var sampler = gl.getUniformLocation( gl.program , "sampler" );
+            var sampler2 = gl.getUniformLocation( gl.program , "sampler2" );
+            var buffer = gl.createBuffer();
+            var data = new Float32Array( [
+                -0.8 , 0.8 , 0 , 1 ,
+                0.8 , 0.8 , 1 , 1 ,
+                0.8 , -0.8 , 1 , 0 ,
+                -0.8 , -0.8 , 0 , 0
+            ] );
+            var SIZE = data.BYTES_PER_ELEMENT;
+            gl.bindBuffer( gl.ARRAY_BUFFER , buffer );
+            gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
+            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , 4 * SIZE , 0 );
+            gl.vertexAttribPointer( v_tex_position , 2 , gl.FLOAT , false , 4 * SIZE , 2 * SIZE );
+            gl.enableVertexAttribArray( position );
+            gl.enableVertexAttribArray( v_tex_position );
+
+            var texture = gl.createTexture();
+            var texture2 = gl.createTexture();
+            var img = new Image();
+            var img2 = new Image();
+            img.src = "img/star.jpg";
+            img2.src = "img/face.jpg";
+            concurrentTask( [
+                function ( done ) {
+                    img.onload = done;
+                } ,
+                function ( done ) {
+                    img2.onload = done;
+                }
+            ] , function () {
+                setImage( texture , sampler , img , 0 );
+                setImage( texture2 , sampler2 , img2 , 1 );
+
+                gl.drawArrays( gl.TRIANGLE_FAN , 0 , 4 );
+            } );
+
+            function setImage( texture , sampler , img , index ) {
+                gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , 1 );
+                gl.activeTexture( index ? gl.TEXTURE1 : gl.TEXTURE0 );
+                gl.bindTexture( gl.TEXTURE_2D , texture );
+                gl.texParameteri( gl.TEXTURE_2D , gl.TEXTURE_MIN_FILTER , gl.LINEAR );
+                gl.texImage2D( gl.TEXTURE_2D , 0 , gl.RGB , gl.RGB , gl.UNSIGNED_BYTE , img );
+                gl.uniform1i( sampler , index );
+            }
+
+        }
+
+        function concurrentTask( tasks , callback ) {
+            var len = tasks.length , count = 0;
+            tasks.forEach( function ( task ) {
+                task( function () {
+                    count++;
+                    count == len && callback();
+                } );
+            } );
+        }
+    })();
+</script>
+</body>
+</html>
