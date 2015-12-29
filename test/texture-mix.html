@@ -34,7 +34,7 @@
                 'uniform sampler2D sampler2;\n' +
                 'varying vec2 tex_position;\n' +
                 'void main() {\n' +
-                '   gl_FragColor = (texture2D(sampler, tex_position)+texture2D(sampler2, tex_position))/2.0;\n' +
+                '   gl_FragColor = (texture2D(sampler, tex_position)/1.0+texture2D(sampler2, tex_position)/4.0);\n' +
                 '}\n';
 
         if ( initShaders( gl , v_shader , f_shader ) ) {
