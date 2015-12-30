@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>triangle</title>
+    <title>index</title>
     <style>
         canvas {
             width: 500px;
@@ -15,16 +15,16 @@
 <script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
 <script>
     (function () {
+
         var canvas = document.querySelector( "canvas" );
         var gl = canvas.getContext( "webgl" );
-
         var v_shader =
-                "attribute vec4 a_color;\n" +
                 "attribute vec4 position;\n" +
+                "attribute vec4 v_color;\n" +
                 "varying vec4 color;\n" +
                 "void main(){\n" +
                 "   gl_Position = position;\n" +
-                "   color = a_color;\n" +
+                "   color = v_color;\n" +
                 "}\n";
         var f_shader =
                 "precision mediump float;\n" +
@@ -33,32 +33,33 @@
                 "   gl_FragColor = color;\n" +
                 "}\n";
 
-
-        gl.clearColor( 0 , 0 , 0 , 1 );
-        gl.clear( gl.COLOR_BUFFER_BIT );
-
         if ( initShaders( gl , v_shader , f_shader ) ) {
-            var a_color = gl.getAttribLocation( gl.program , "a_color" );
-            var position = gl.getAttribLocation( gl.program , "position" );
-
             var data = new Float32Array( [
-                0 , 0.5 , 1.0 , 0.0 , 0.0 ,
-                -0.5 , -0.5 , 0.0 , 1.0 , 0.0 ,
-                0.5 , -0.5 , 0.0 , 0.0 , 1.0
+                0.5 , 0.5 , 1.0 , 0.0 , 0.0 ,
+                0.0 , 0.0 , 0.0 , 1.0 , 0.0 ,
+                -0.5 , 0.0 , 0.0 , 0.0 , 1.0 ,
+                0.5 , -0.5 , 0 , 0 , 0
             ] );
-
-            var FSIZE = data.BYTES_PER_ELEMENT;
             var buffer = gl.createBuffer();
+            var indexBuffer = gl.createBuffer();
+            var position = gl.getAttribLocation( gl.program , "position" );
+            var v_color = gl.getAttribLocation( gl.program , "v_color" );
+            var size = data.BYTES_PER_ELEMENT;
+            var indexs = new Uint8Array( [
+                0 , 2 , 3
+            ] );
             gl.bindBuffer( gl.ARRAY_BUFFER , buffer );
             gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
-            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , FSIZE * 5 , 0 );
+            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , size * 5 , 0 );
+            gl.vertexAttribPointer( v_color , 3 , gl.FLOAT , false , 5 * size , 2 * size );
             gl.enableVertexAttribArray( position );
+            gl.enableVertexAttribArray( v_color );
 
+            gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER , indexBuffer );
+            gl.bufferData( gl.ELEMENT_ARRAY_BUFFER , indexs , gl.STATIC_DRAW );
+            gl.drawElements( gl.TRIANGLES , 3 , gl.UNSIGNED_BYTE , 0 );
 
-            gl.vertexAttribPointer( a_color , 3 , gl.FLOAT , false , 5 * FSIZE , 2 * FSIZE );
-            gl.enableVertexAttribArray( a_color );
-
-            gl.drawArrays( gl.TRIANGLE_STRIP , 0 , 3 )
+//            gl.drawArrays( gl.TRIANGLE_STRIP , 0 , 3 );
 
 
         }
