@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<canvas width="500" height="500"></canvas>
+<script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script>
+    (function () {
+        var canvas = document.querySelector( "canvas" );
+        var gl = canvas.getContext( "webgl" );
+
+        var v_shader =
+                "attribute vec4 position;\n" +
+                "void main(){\n" +
+                "   gl_Position = position;\n" +
+                "   gl_PointSize = 10.0;\n" +
+                "}\n";
+
+        var f_shader =
+                "void main(){\n" +
+                "   gl_FragColor = vec4(1,0,0,1)" +
+                "}\n";
+
+
+
+    })();
+</script>
+</body>
+</html>
