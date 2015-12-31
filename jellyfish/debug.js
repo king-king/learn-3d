@@ -2,7 +2,7 @@
  * Created by WQ on 2015/12/31.
  */
 var localParam = new LocalParam();
-var Param = new Param();
+var Param = new param();
 
 function LocalParam(){
     this.camera = new Object;
@@ -25,7 +25,7 @@ function LocalParam(){
     this.cycle32 = 0.0;
 }
 
-function Param(){
+function param(){
 
     //jellyfish
     this.jCount = 3;
