@@ -6,15 +6,14 @@ var gl;
 var canvas , docWidth , docHeight;
 
 function initWin( w , h ) {
-
-    (w) ? docWidth = w : docWidth = $( window ).width();
-    (h) ? docHeight = h : docHeight = $( window ).height();
+    docWidth = w || $( window ).width();
+    docHeight = h || $( window ).height();
     $( "#webgl-canvas" ).width( docWidth );
     $( "#webgl-canvas" ).height( docHeight );
     canvas.width = docWidth;
     canvas.height = docHeight;
     try {
-        gl = canvas.getContext( "experimental-webgl" );
+        gl = canvas.getContext( "experimental-webgl" ) || canvas.getContext( "webgl" );
         gl.viewportWidth = docWidth;
         gl.viewportHeight = docHeight;
     } catch ( e ) {
