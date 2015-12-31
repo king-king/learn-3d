@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div {
+            width: 200px;
+            height: 200px;
+            background: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div>download</div>
+<script>
+    var archor = [];
+    for ( var i = 14; i < 32; i++ ) {
+        var a = document.createElement( "a" );
+        a.href = "http://www.webhek.com/misc-res/webgl-jellyfish/images/caustics/caustics7." + i + ".jpg";
+        a.download = true;
+        a.innerHTML = i;
+        document.body.appendChild( a );
+        archor.push( a );
+    }
+    document.querySelector( "div" ).onclick = function () {
+        for ( i = 0; i < archor.length; i++ ) {
+            archor[ i ].click();
+        }
+    }
+</script>
+
+</body>
+</html>
