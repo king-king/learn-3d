@@ -23,7 +23,7 @@
                 "attribute vec4 position;\n" +
                 "varying vec4 color;\n" +
                 "void main(){\n" +
-                "   gl_Position = position;\n" +
+                "   gl_Position = vec4(position.x/2.0,position.y/2.0,position.z/2.0,1);\n" +
                 "   color = a_color;\n" +
                 "}\n";
         var f_shader =
