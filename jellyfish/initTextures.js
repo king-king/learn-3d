@@ -26,6 +26,7 @@ function loadTexture( label , path ) {
     }
 }
 
+// 先向texture中写入图片,等到使用的时候再向拾取器传入
 function handleLoadedTexture( textures , label ) {
     gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , true );
     gl.bindTexture( gl.TEXTURE_2D , textures );
@@ -37,6 +38,7 @@ function handleLoadedTexture( textures , label ) {
     textureOK[ label ] = 1;
 }
 
+//  等到实际使用的时候再传入,注意可以直接绑定一个有内容的texture,然后直接传输
 function bindTexture( name , i ) {
     if ( textureOK[ name ] == 1 ) {
         if ( i == 0 ) gl.activeTexture( gl.TEXTURE0 );
