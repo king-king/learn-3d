@@ -5,6 +5,7 @@
 var texture = {};
 var textureOK = {};
 
+// 这里一次性加载34张纹理图的方式值得学习
 function initTextures() {
     loadTexture( 'jellyfish' , 'img/jellyfish.png' );
     loadTexture( 'luminescence' , 'img/luminescence.png' );
