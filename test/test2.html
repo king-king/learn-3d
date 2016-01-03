@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>test02</title>
     <style>
         canvas {
             width: 500px;
@@ -17,6 +17,7 @@
     (function () {
         var canvas = document.querySelector( "canvas" );
         var gl = canvas.getContext( "webgl" );
+
         var v_shader =
                 "attribute vec4 position;\n" +
                 "attribute vec4 v_color;\n" +
@@ -33,31 +34,25 @@
                 "}\n";
 
         if ( initShaders( gl , v_shader , f_shader ) ) {
-            gl.clearColor( 0 , 0 , 0 , 1 );
-            gl.clear( gl.COLOR_BUFFER_BIT );
+            var data = new Float32Array( [
+                0.5 , 0.5 , 1 , 0 , 0 ,
+                0.5 , -0.5 , 1 , 1 , 0 ,
+                -0.5 , -0.5 , 1 , 1 , 1 ,
+                -0.5 , 0.5 , 0 , 0 , 0
+            ] );
+            var size = data.BYTES_PER_ELEMENT;
+            var buffer = gl.createBuffer();
             var position = gl.getAttribLocation( gl.program , "position" );
             var v_color = gl.getAttribLocation( gl.program , "v_color" );
-            var data = new Float32Array( [
-                0 , 0 , 1 , 0 , 0 ,
-                0.5 , 0.3 , 0 , 1 , 0 ,
-                0.5 , -0.5 , 0 , 1 , 0 ,
-                -0.5 , -0.5 , 0 , 0 , 1 ,
-                -0.5 , 0.5 , 0 , 0 , 0 ,
-                0 , 0.5 , 0 , 0 , 0
-            ] );
-            var buffer = gl.createBuffer();
-            var SIZE = data.BYTES_PER_ELEMENT;
-
             gl.bindBuffer( gl.ARRAY_BUFFER , buffer );
             gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
-            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , 5 * SIZE , 0 );
-            gl.vertexAttribPointer( v_color , 3 , gl.FLOAT , false , 5 * SIZE , 2 * SIZE );
+            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , 5 * size , 0 );
+            gl.vertexAttribPointer( v_color , 3 , gl.FLOAT , false , 5 * size , 2 * size );
             gl.enableVertexAttribArray( position );
             gl.enableVertexAttribArray( v_color );
 
-            gl.texSubImage2D()
 
-            gl.drawArrays( gl.TRIANGLE_FAN , 0 , 6 );
+            gl.drawArrays( gl.TRIANGLE_FAN , 0 , 4 );
 
 
         }
