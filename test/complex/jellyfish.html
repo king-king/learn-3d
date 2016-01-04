@@ -16,6 +16,7 @@
 <canvas width="600" height="600"></canvas>
 <script src="../data/jellyfish0.js"></script>
 <script src="../../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script src="js/lib.js"></script>
 <script>
     (function () {
         var canvas = document.querySelector( "canvas" );
@@ -25,10 +26,11 @@
                 "attribute vec4 position;\n" +
                 "attribute vec4 v_color;\n" +
                 "attribute vec3 v_tex_position;\n" +
+                "uniform mat4 matrix;\n" +
                 "varying vec2 tex_position;\n" +
                 "varying vec4 color;\n" +
                 "void main(){\n" +
-                "   gl_Position = vec4(position.x/12.0,position.y/12.0,position.z/12.0,1);\n" +
+                "   gl_Position = vec4((matrix*position/10.0).xyz,1);\n" +
                 "   color = v_color;\n" +
                 "   tex_position = v_tex_position.st;\n" +
                 "}\n";
@@ -37,9 +39,10 @@
                 "precision mediump float;\n" +
                 "varying vec4 color;\n" +
                 "uniform sampler2D sampler;\n" +
+                "uniform sampler2D sampler2;\n" +
                 "varying vec2 tex_position;\n" +
                 "void main(){\n" +
-                "   gl_FragColor = texture2D(sampler,tex_position);\n" +
+                "   gl_FragColor = color*0.25+texture2D(sampler,tex_position)*0.25+texture2D(sampler2,tex_position)*0.5;\n" +
                 "}\n";
 
         if ( initShaders( gl , v_shader , f_shader ) ) {
@@ -47,6 +50,8 @@
             var v_color = gl.getAttribLocation( gl.program , "v_color" );
             var v_tex_position = gl.getAttribLocation( gl.program , "v_tex_position" );
             var sampler = gl.getUniformLocation( gl.program , "sampler" );
+            var sampler2 = gl.getUniformLocation( gl.program , "sampler2" );
+            var matrix = gl.getUniformLocation( gl.program , "matrix" );
 
             var bufferV = gl.createBuffer();
             gl.bindBuffer( gl.ARRAY_BUFFER , bufferV );
@@ -71,10 +76,19 @@
             gl.bufferData( gl.ELEMENT_ARRAY_BUFFER , new Uint16Array( jellyfish1.indices ) , gl.STATIC_DRAW );
 
             var texture = gl.createTexture();
-
+            var texture2 = gl.createTexture();
             var img = new Image();
-            img.src = "img/jellyfish.png";
-            img.onload = function () {
+            img.src = "img/luminescence.png";
+            var img2 = new Image();
+            img2.src = "img/jellyfish.png";
+            concurrentTask( [
+                function ( done ) {
+                    img.onload = done;
+                } ,
+                function ( done ) {
+                    img2.onload = done;
+                }
+            ] , function () {
                 gl.activeTexture( gl.TEXTURE0 );
                 gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , 1 );
                 gl.bindTexture( gl.TEXTURE_2D , texture );
@@ -84,11 +98,34 @@
                 gl.generateMipmap( gl.TEXTURE_2D );
                 gl.uniform1i( sampler , 0 );
 
+                gl.activeTexture( gl.TEXTURE1 );
+                gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , 1 );
+                gl.bindTexture( gl.TEXTURE_2D , texture2 );
+                gl.texParameteri( gl.TEXTURE_2D , gl.TEXTURE_MIN_FILTER , gl.NEAREST );
+                gl.texParameteri( gl.TEXTURE_2D , gl.TEXTURE_MAG_FILTER , gl.LINEAR );
+                gl.texImage2D( gl.TEXTURE_2D , 0 , gl.RGBA , gl.RGBA , gl.UNSIGNED_BYTE , img2 );
+                gl.generateMipmap( gl.TEXTURE_2D );
+                gl.uniform1i( sampler , 1 );
+
                 gl.clearColor( 0.3 , 0.3 , 0.3 , 1 );
                 gl.clear( gl.COLOR_BUFFER_BIT );
+                var curMatrix = [ 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 ];
+                var t_matrix = rotate3dM( 1 , 0 , 0 , -30 );
+                curMatrix = combine( t_matrix , curMatrix );
+                gl.uniformMatrix4fv( matrix , false , curMatrix );
 
                 gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
-            };
+
+                setTimeout( function () {
+                    t_matrix = rotate3dM( 0 , 1 , 0 , 1 );
+                    curMatrix = combine( t_matrix , curMatrix );
+                    gl.uniformMatrix4fv( matrix , false , curMatrix );
+                    gl.clear( gl.COLOR_BUFFER_BIT );
+                    gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
+                    setTimeout( arguments.callee , 30 );
+                } , 30 );
+
+            } );
 
 
         }
