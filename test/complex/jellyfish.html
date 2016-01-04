@@ -16,6 +16,7 @@
 <canvas width="600" height="600"></canvas>
 <script src="../data/jellyfish0.js"></script>
 <script src="../../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script src="../../webgl-programming-guide/lib/cuon-matrix.js"></script>
 <script src="js/lib.js"></script>
 <script>
     (function () {
@@ -109,17 +110,14 @@
 
                 gl.clearColor( 0.3 , 0.3 , 0.3 , 1 );
                 gl.clear( gl.COLOR_BUFFER_BIT );
-                var curMatrix = [ 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 ];
-                var t_matrix = rotate3dM( 1 , 0 , 0 , -30 );
-                curMatrix = combine( t_matrix , curMatrix );
-                gl.uniformMatrix4fv( matrix , false , curMatrix );
-
+                var curMatrix = new Matrix4();
+                curMatrix = curMatrix.rotate( 30 , 1 , 0 , 0 );
+                gl.uniformMatrix4fv( matrix , false , curMatrix.elements );
                 gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
-
+                var t_matrix = (new Matrix4()).rotate( 0 , 1 , 0 , 1 );
                 setTimeout( function () {
-                    t_matrix = rotate3dM( 0 , 1 , 0 , 1 );
-                    curMatrix = combine( t_matrix , curMatrix );
-                    gl.uniformMatrix4fv( matrix , false , curMatrix );
+                    curMatrix = curMatrix.multiply( t_matrix );
+                    gl.uniformMatrix4fv( matrix , false , curMatrix.elements );
                     gl.clear( gl.COLOR_BUFFER_BIT );
                     gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
                     setTimeout( arguments.callee , 30 );
