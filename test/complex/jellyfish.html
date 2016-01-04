@@ -7,7 +7,9 @@
         canvas {
             width: 600px;
             height: 600px;
+            position: absolute;
         }
+
     </style>
 </head>
 <body>
@@ -21,30 +23,73 @@
 
         var v_shader =
                 "attribute vec4 position;\n" +
+                "attribute vec4 v_color;\n" +
+                "attribute vec3 v_tex_position;\n" +
+                "varying vec2 tex_position;\n" +
+                "varying vec4 color;\n" +
                 "void main(){\n" +
                 "   gl_Position = vec4(position.x/12.0,position.y/12.0,position.z/12.0,1);\n" +
+                "   color = v_color;\n" +
+                "   tex_position = v_tex_position.st;\n" +
                 "}\n";
 
         var f_shader =
+                "precision mediump float;\n" +
+                "varying vec4 color;\n" +
+                "uniform sampler2D sampler;\n" +
+                "varying vec2 tex_position;\n" +
                 "void main(){\n" +
-                "   gl_FragColor = vec4(1.0,1.0,0.0,1);\n" +
+                "   gl_FragColor = texture2D(sampler,tex_position);\n" +
                 "}\n";
 
         if ( initShaders( gl , v_shader , f_shader ) ) {
             var position = gl.getAttribLocation( gl.program , "position" );
+            var v_color = gl.getAttribLocation( gl.program , "v_color" );
+            var v_tex_position = gl.getAttribLocation( gl.program , "v_tex_position" );
+            var sampler = gl.getUniformLocation( gl.program , "sampler" );
+
             var bufferV = gl.createBuffer();
             gl.bindBuffer( gl.ARRAY_BUFFER , bufferV );
             gl.bufferData( gl.ARRAY_BUFFER , new Float32Array( jellyfish1.vertexPositions ) , gl.STATIC_DRAW );
             gl.vertexAttribPointer( position , 3 , gl.FLOAT , false , 0 , 0 );
             gl.enableVertexAttribArray( position );
+
+            var colorBuffer = gl.createBuffer();
+            gl.bindBuffer( gl.ARRAY_BUFFER , colorBuffer );
+            gl.bufferData( gl.ARRAY_BUFFER , new Float32Array( jellyfish1.vertexColors ) , gl.STATIC_DRAW );
+            gl.vertexAttribPointer( v_color , 3 , gl.FLOAT , false , 0 , 0 );
+            gl.enableVertexAttribArray( v_color );
+
+            var texCorBuffer = gl.createBuffer();
+            gl.bindBuffer( gl.ARRAY_BUFFER , texCorBuffer );
+            gl.bufferData( gl.ARRAY_BUFFER , new Float32Array( jellyfish1.vertexTextureCoords ) , gl.STATIC_DRAW );
+            gl.vertexAttribPointer( v_tex_position , 3 , gl.FLOAT , false , 0 , 0 );
+            gl.enableVertexAttribArray( v_tex_position );
+
             var bufferI = gl.createBuffer();
             gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER , bufferI );
             gl.bufferData( gl.ELEMENT_ARRAY_BUFFER , new Uint16Array( jellyfish1.indices ) , gl.STATIC_DRAW );
 
-            gl.clearColor( 0 , 0 ,0, 1 );
-            gl.clear( gl.COLOR_BUFFER_BIT );
+            var texture = gl.createTexture();
 
-            gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
+            var img = new Image();
+            img.src = "img/jellyfish.png";
+            img.onload = function () {
+                gl.activeTexture( gl.TEXTURE0 );
+                gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , 1 );
+                gl.bindTexture( gl.TEXTURE_2D , texture );
+                gl.texParameteri( gl.TEXTURE_2D , gl.TEXTURE_MIN_FILTER , gl.NEAREST );
+                gl.texParameteri( gl.TEXTURE_2D , gl.TEXTURE_MAG_FILTER , gl.LINEAR );
+                gl.texImage2D( gl.TEXTURE_2D , 0 , gl.RGBA , gl.RGBA , gl.UNSIGNED_BYTE , img );
+                gl.generateMipmap( gl.TEXTURE_2D );
+                gl.uniform1i( sampler , 0 );
+
+                gl.clearColor( 0.3 , 0.3 , 0.3 , 1 );
+                gl.clear( gl.COLOR_BUFFER_BIT );
+
+                gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
+            };
+
 
         }
 
