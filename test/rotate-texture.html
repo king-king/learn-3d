@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Texture</title>
+    <style>
+        canvas {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<canvas width="500" height="500"></canvas>
+<script src="../webgl-programming-guide/lib/cuon-utils.js"></script>
+<script>
+    (function () {
+
+        var canvas = document.querySelector( "canvas" );
+        var gl = canvas.getContext( "webgl" );
+
+        var v_shader =
+                "attribute vec4 position;\n" +
+                "attribute vec2 v_tex_position;\n" +
+                "varying vec2 tex_position;\n" +
+                "uniform mat4 matrix;\n" +
+                "void main(){\n" +
+                "   gl_Position = matrix * position;\n" +
+                "   tex_position = v_tex_position;\n" +
+                "}\n";
+
+        var f_shader =
+                'precision mediump float;\n' +
+                'uniform sampler2D sampler;\n' +
+                'varying vec2 tex_position;\n' +
+                'void main() {\n' +
+                '  gl_FragColor = texture2D(sampler, tex_position);\n' +
+                '}\n';
+        var curMatrix = [ 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 1 ];
+
+        function rotateObj() {
+            var t_matrix = rotate3dM( 0 , 1 , 0 , 1 );
+            gl.clear( gl.COLOR_BUFFER_BIT );
+            curMatrix = combine( t_matrix , curMatrix );
+            gl.uniformMatrix4fv( matrix , false , curMatrix );
+            gl.drawArrays( gl.TRIANGLE_FAN , 0 , 4 );
+        }
+
+        function rotate3dM( x , y , z , a ) {
+            a = a * Math.PI / 180;
+            var cosa = Math.cos( a ) , sina = Math.sin( a );
+            var r = Math.sqrt( x * x + y * y + z * z );
+            x /= r;
+            y /= r;
+            z /= r;
+            return [
+                1 + (1 - cosa) * ( x * x - 1 ) , z * sina + x * y * (1 - cosa) , -y * sina + x * z * (1 - cosa) , 0 ,
+                -z * sina + x * y * (1 - cosa) , 1 + (1 - cosa) * (y * y - 1) , x * sina + y * z * (1 - cosa) , 0 ,
+                y * sina + x * z * (1 - cosa) , -x * sina + y * z * (1 - cosa) , 1 + (1 - cosa) * (z * z - 1) , 0 ,
+                0 , 0 , 0 , 1
+            ]
+        }
+
+        function mul( m1 , m2 ) {
+            var re = [];
+            for ( var r = 0; r < 4; r++ ) {
+                for ( var c = 0; c < 4; c++ ) {
+                    re[ r * 4 + c ] = 0;
+                    for ( var k = 0; k < 4; k++ ) {
+                        re[ r * 4 + c ] += m1[ r * 4 + k ] * m2[ k * 4 + c ];
+                    }
+                }
+            }
+            return re;
+        }
+
+        function combine() {
+            var result = [
+                1 , 0 , 0 , 0 ,
+                0 , 1 , 0 , 0 ,
+                0 , 0 , 1 , 0 ,
+                0 , 0 , 0 , 1
+            ];
+            for ( var i = 0; i < arguments.length; i++ ) {
+                result = mul( result , arguments[ i ] );
+            }
+            return result;
+        }
+
+        function requestAnimate( keyframe ) {
+            var id;
+
+            function f() {
+                keyframe();
+                clearTimeout( id );
+                id = setTimeout( arguments.callee , 20 );
+            }
+
+            f();
+            return {
+                destroy : function () {
+                    clearTimeout( id );
+                }
+            }
+        }
+
+        if ( initShaders( gl , v_shader , f_shader ) ) {
+            var position = gl.getAttribLocation( gl.program , "position" );
+            var v_tex_position = gl.getAttribLocation( gl.program , "v_tex_position" );
+            var sampler = gl.getUniformLocation( gl.program , "sampler" );
+            var matrix = gl.getUniformLocation( gl.program , "matrix" );
+
+            var buffer = gl.createBuffer();
+            var data = new Float32Array( [
+                -0.5 , 0.5 , 0 , 1 ,
+                0.5 , 0.5 , 1 , 1 ,
+                0.5 , -0.5 , 1 , 0 ,
+                -0.5 , -0.5 , 0 , 0
+            ] );
+            var SIZE = data.BYTES_PER_ELEMENT;
+            gl.bindBuffer( gl.ARRAY_BUFFER , buffer );
+            gl.bufferData( gl.ARRAY_BUFFER , data , gl.STATIC_DRAW );
+            gl.vertexAttribPointer( position , 2 , gl.FLOAT , false , 4 * SIZE , 0 );
+            gl.vertexAttribPointer( v_tex_position , 2 , gl.FLOAT , false , 4 * SIZE , 2 * SIZE );
+            gl.enableVertexAttribArray( position );
+            gl.enableVertexAttribArray( v_tex_position );
+
+            var texture = gl.createTexture();
+            var img = new Image();
+            img.src = "img/star.jpg";
+            img.onload = function () {
+                gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , 1 );
+                gl.activeTexture( gl.TEXTURE0 );
+                gl.bindTexture( gl.TEXTURE_2D , texture );
+                gl.texParameteri( gl.TEXTURE_2D , gl.TEXTURE_MIN_FILTER , gl.LINEAR );
+                gl.texImage2D( gl.TEXTURE_2D , 0 , gl.RGB , gl.RGB , gl.UNSIGNED_BYTE , img );
+
+                gl.uniformMatrix4fv( matrix , false , curMatrix );
+                gl.uniform1i( sampler , 0 );
+                gl.drawArrays( gl.TRIANGLE_FAN , 0 , 4 );
+
+                requestAnimate( function () {
+                    rotateObj();
+                } );
+
+            }
+
+
+        }
+
+
+    })();
+</script>
+</body>
+</html>
