@@ -22,14 +22,14 @@ function setjTimeUniform( time ) {
 }
 
 function setJointUniforms() {
-    gl.uniformMatrix4fv( currentProgram.joint0 , gl.FALSE , new Float32Array( joint0 ) );
-    gl.uniformMatrix4fv( currentProgram.joint1 , gl.FALSE , new Float32Array( joint1 ) );
-    gl.uniformMatrix4fv( currentProgram.joint2 , gl.FALSE , new Float32Array( joint2 ) );
-    gl.uniformMatrix4fv( currentProgram.joint3 , gl.FALSE , new Float32Array( joint3 ) );
+    gl.uniformMatrix4fv( currentProgram.joint0 , false , new Float32Array( joint0 ) );
+    gl.uniformMatrix4fv( currentProgram.joint1 , false , new Float32Array( joint1 ) );
+    gl.uniformMatrix4fv( currentProgram.joint2 , false , new Float32Array( joint2 ) );
+    gl.uniformMatrix4fv( currentProgram.joint3 , false , new Float32Array( joint3 ) );
 
     M4x4.inverseOrthonormal( joint0 , joint0InvTranspose );
     M4x4.transpose( joint0InvTranspose , joint0InvTranspose );
-    gl.uniformMatrix4fv( currentProgram.joint0InvTranspose , gl.FALSE , new Float32Array( joint0InvTranspose ) );
+    gl.uniformMatrix4fv( currentProgram.joint0InvTranspose , false , new Float32Array( joint0InvTranspose ) );
 }
 
 function setMatrixUniforms() {
