@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>jellyfish</title>
+    <title>jellyfish1</title>
     <style>
         canvas {
             width: 600px;
@@ -114,7 +114,7 @@
 
                         var vpMatrix = new Matrix4();
                         vpMatrix.setPerspective( 30 , canvas.width / canvas.height , 1 , 1000 );
-                        vpMatrix.lookAt( 0 , 20 , 20 , 0 , 0 , 0 , 0 , 1 , 0 );
+                        vpMatrix.lookAt( 0 , 20 ,30 , 0 , 0 , 0 , 0 , 1 , 0 );
                         var curMatrix = new Matrix4();
                         gl.uniformMatrix4fv( matrix , false , curMatrix.elements );
                         gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
