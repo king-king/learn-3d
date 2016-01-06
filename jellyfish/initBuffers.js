@@ -49,7 +49,7 @@ function initBuffer( name , data ) {
     vertexTextureCoordBuffer[ name ].itemSize = 3;
     vertexTextureCoordBuffer[ name ].numItems = data.vertexTextureCoords.length / 3;
 
-    weightData = [];
+    var weightData = [];
     for ( var i = 0; i < data.vertexPositions.length; i = i + 3 ) {
         var ypos = -data.vertexPositions[ i + 1 ] / 3;
         var w0 = Math.max( Math.min( -ypos + 1 , 1 ) , 0 );
