@@ -26,13 +26,13 @@ function main() {
 
     // Get the rendering context for WebGL
     var gl = getWebGLContext( canvas );
-    if ( ! gl ) {
+    if ( !gl ) {
         console.log( 'Failed to get the rendering context for WebGL' );
         return;
     }
 
     // Initialize shaders
-    if ( ! initShaders( gl , VSHADER_SOURCE , FSHADER_SOURCE ) ) {
+    if ( !initShaders( gl , VSHADER_SOURCE , FSHADER_SOURCE ) ) {
         console.log( 'Failed to intialize shaders.' );
         return;
     }
@@ -54,7 +54,7 @@ function main() {
 
     // Get the storage location of u_MvpMatrix
     var u_MvpMatrix = gl.getUniformLocation( gl.program , 'u_MvpMatrix' );
-    if ( ! u_MvpMatrix ) {
+    if ( !u_MvpMatrix ) {
         console.log( 'Failed to get the storage location of u_MvpMatrix' );
         return;
     }
@@ -85,12 +85,12 @@ function initVertexBuffers( gl ) {
     //  v2------v3
 
     var vertices = new Float32Array( [   // Vertex coordinates
-        1.0 , 1.0 , 1.0 , - 1.0 , 1.0 , 1.0 , - 1.0 , - 1.0 , 1.0 , 1.0 , - 1.0 , 1.0 ,    // v0-v1-v2-v3 front
-        1.0 , 1.0 , 1.0 , 1.0 , - 1.0 , 1.0 , 1.0 , - 1.0 , - 1.0 , 1.0 , 1.0 , - 1.0 ,    // v0-v3-v4-v5 right
-        1.0 , 1.0 , 1.0 , 1.0 , 1.0 , - 1.0 , - 1.0 , 1.0 , - 1.0 , - 1.0 , 1.0 , 1.0 ,    // v0-v5-v6-v1 up
-        - 1.0 , 1.0 , 1.0 , - 1.0 , 1.0 , - 1.0 , - 1.0 , - 1.0 , - 1.0 , - 1.0 , - 1.0 , 1.0 ,    // v1-v6-v7-v2 left
-        - 1.0 , - 1.0 , - 1.0 , 1.0 , - 1.0 , - 1.0 , 1.0 , - 1.0 , 1.0 , - 1.0 , - 1.0 , 1.0 ,    // v7-v4-v3-v2 down
-        1.0 , - 1.0 , - 1.0 , - 1.0 , - 1.0 , - 1.0 , - 1.0 , 1.0 , - 1.0 , 1.0 , 1.0 , - 1.0     // v4-v7-v6-v5 back
+        1.0 , 1.0 , 1.0 , -1.0 , 1.0 , 1.0 , -1.0 , -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ,    // v0-v1-v2-v3 front
+        1.0 , 1.0 , 1.0 , 1.0 , -1.0 , 1.0 , 1.0 , -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ,    // v0-v3-v4-v5 right
+        1.0 , 1.0 , 1.0 , 1.0 , 1.0 , -1.0 , -1.0 , 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ,    // v0-v5-v6-v1 up
+        -1.0 , 1.0 , 1.0 , -1.0 , 1.0 , -1.0 , -1.0 , -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ,    // v1-v6-v7-v2 left
+        -1.0 , -1.0 , -1.0 , 1.0 , -1.0 , -1.0 , 1.0 , -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ,    // v7-v4-v3-v2 down
+        1.0 , -1.0 , -1.0 , -1.0 , -1.0 , -1.0 , -1.0 , 1.0 , -1.0 , 1.0 , 1.0 , -1.0     // v4-v7-v6-v5 back
     ] );
 
     var colors = new Float32Array( [     // Colors
@@ -113,15 +113,15 @@ function initVertexBuffers( gl ) {
 
     // Create a buffer object
     var indexBuffer = gl.createBuffer();
-    if ( ! indexBuffer )
-        return - 1;
+    if ( !indexBuffer )
+        return -1;
 
     // Write the vertex property to buffers (coordinates and normals)
-    if ( ! initArrayBuffer( gl , vertices , 3 , gl.FLOAT , 'a_Position' ) )
-        return - 1;
+    if ( !initArrayBuffer( gl , vertices , 3 , gl.FLOAT , 'a_Position' ) )
+        return -1;
 
-    if ( ! initArrayBuffer( gl , colors , 4 , gl.FLOAT , 'a_Color' ) )
-        return - 1;
+    if ( !initArrayBuffer( gl , colors , 4 , gl.FLOAT , 'a_Color' ) )
+        return -1;
 
     // Unbind the buffer object
     gl.bindBuffer( gl.ARRAY_BUFFER , null );
@@ -136,7 +136,7 @@ function initVertexBuffers( gl ) {
 function initArrayBuffer( gl , data , num , type , attribute ) {
     // Create a buffer object
     var buffer = gl.createBuffer();
-    if ( ! buffer ) {
+    if ( !buffer ) {
         console.log( 'Failed to create the buffer object' );
         return false;
     }
