@@ -34,7 +34,7 @@ var v_shader =
     "    float hpi = 1.570796325;\n" +
     "    float time = mod(uCurrentJellyfishTime+aVertexPosition.y, dpi);\n" +
     "    float offset = smoothstep(0.0,1.,max(0.,-aVertexPosition.y-0.8)/10.);\n" +
-    "   vec3 anim = (vec3(aVertexColor.x,aVertexColor.y,aVertexColor.z)/8.0*sin(time) * (1.-offset));\n" +
+    "    vec3 anim = (aVertexColor.xyz/8.0*sin(time) * (1.-offset));\n" +
     "    vec3 pos = aVertexPosition + anim\n" +
         //skinning
     "    pos = vec3(uJoint0 * vec4(pos, 1.0))*aSkinWeight.x +\n" +
