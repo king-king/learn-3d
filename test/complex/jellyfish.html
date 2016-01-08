@@ -90,7 +90,11 @@
                             img2.onload = done;
                         }
                     ] , function () {
+                        gl.blendFunc( gl.SRC_ALPHA , gl.ONE_MINUS_SRC_ALPHA );
+                        gl.enable( gl.BLEND );
                         gl.enable( gl.DEPTH_TEST );
+                        gl.depthFunc( gl.LEQUAL );
+
                         gl.activeTexture( gl.TEXTURE0 );
                         gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL , 1 );
                         gl.bindTexture( gl.TEXTURE_2D , texture );
@@ -114,7 +118,7 @@
 
                         var vpMatrix = new Matrix4();
                         vpMatrix.setPerspective( 30 , canvas.width / canvas.height , 1 , 1000 );
-                        vpMatrix.lookAt( 0 , 20 ,30 , 0 , 0 , 0 , 0 , 1 , 0 );
+                        vpMatrix.lookAt( 0 , 20 , 30 , 0 , 0 , 0 , 0 , 1 , 0 );
                         var curMatrix = new Matrix4();
                         gl.uniformMatrix4fv( matrix , false , curMatrix.elements );
                         gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
@@ -131,7 +135,6 @@
                             }
                             t_matrix.setRotate( curangle , 0 , 1 , 0 );
                             curMatrix.set( vpMatrix ).multiply( t_matrix );
-                            console.log( curangle , t_matrix.elements );
                             gl.uniformMatrix4fv( matrix , false , curMatrix.elements );
                             gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
                             gl.drawElements( gl.TRIANGLES , jellyfish1.indices.length , gl.UNSIGNED_SHORT , 0 );
