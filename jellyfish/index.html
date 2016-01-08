@@ -68,7 +68,7 @@ void main(void) {
   vec3 anim = ( aVertexColor.xyz/8.0*sin(time) * (1.-offset) );// 次变量起到让水母有呼吸的效果
   vec3 pos = aVertexPosition + anim;
 
-  //skinning  此变量让水母有运动
+  //skinning  此变量让水母有运动(joint是移动，aSkinWeight让水母有柔软感，不是僵直的)
   pos = vec3(uJoint0 * vec4(pos, 1.0))*aSkinWeight.x +
 				vec3(uJoint1 * vec4(pos, 1.0))*aSkinWeight.y +
 				vec3(uJoint2 * vec4(pos, 1.0))*aSkinWeight.z +
