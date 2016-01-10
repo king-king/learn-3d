@@ -102,16 +102,7 @@ void main(void) {
 
   gl_Position = WorldViewProj;
 }
-
-
-
-
-
-
-
-
     </script>
-
     <script id="jellyfish-fs" type="x-shader/x-fragment">
 precision mediump float;
 
@@ -133,16 +124,7 @@ void main(void) {
 
   gl_FragColor = vec4(((vDiffuse + caustics)*colorMap.rgb) + vFresnel, colorMap.a);
 }
-
-
-
-
-
-
-
-
     </script>
-
     <script type="text/javascript">
         $( document ).ready( function () {
             webGLStart();
