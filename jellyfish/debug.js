@@ -33,7 +33,7 @@ function param () {
 	this.jScaleRandom = 0;
 	this.jTurb = 0.05;
 	this.jSpeed = 0.01;
-	this.pBbox = [ 80 , 80 , 80 ];
+	this.pBbox = [ 80 , 80 , 80 ];// 水母初始化位置的范围
 
 }
 
