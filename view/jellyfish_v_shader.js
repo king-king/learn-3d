@@ -42,11 +42,12 @@ var v_shader =
     "        vec3(uJoint1 * vec4(pos, 1.0))*aSkinWeight.y +\n" +
     "        vec3(uJoint2 * vec4(pos, 1.0))*aSkinWeight.z +\n" +
     "        vec3(uJoint3 * vec4(pos, 1.0))*aSkinWeight.w;\n" +
-    "    vec3 nrm = vec3(uJoint0InvTranspose * vec4(aVertexNormal, 1.0));\n" +
+
+    "    gl_Position =       uWorldViewProj * vec4(pos, 1.0);\n" +
         //matrices
     "    vWorld =               uWorld * vec4(pos, 1.0);\n" +
-    "    gl_Position =       uWorldViewProj * vec4(pos, 1.0);\n" +
         //vertex normal
+    "    vec3 nrm = vec3(uJoint0InvTranspose * vec4(aVertexNormal, 1.0));\n" +
     "    vec3 VertexNormal = normalize(nrm);\n" +
         //vertex eye vector
     "    vec3 WorldEyeVec = normalize(vWorld.xyz - uViewInv[3].xyz);\n" +
