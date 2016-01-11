@@ -45,7 +45,7 @@ var v_shader =
     "    vec3 nrm = vec3(uJoint0InvTranspose * vec4(aVertexNormal, 1.0));\n" +
         //matrices
     "    vWorld =               uWorld * vec4(pos, 1.0);\n" +
-    "    vec4 WorldViewProj =       uWorldViewProj * vec4(pos, 1.0);\n" +
+    "    gl_Position =       uWorldViewProj * vec4(pos, 1.0);\n" +
         //vertex normal
     "    vec3 VertexNormal = normalize(nrm);\n" +
         //vertex eye vector
@@ -63,6 +63,5 @@ var v_shader =
         //texture coords
     "   vTextureCoord = aTextureCoord;\n" +
 
-    "   gl_Position = WorldViewProj;\n" +
     "}\n";
 

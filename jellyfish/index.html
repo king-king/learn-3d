@@ -77,7 +77,8 @@ void main(void) {
 
   //matrices
   vWorld =               uWorld * vec4(pos, 1.0);
-  vec4 WorldViewProj =       uWorldViewProj * vec4(pos, 1.0);
+
+  gl_Position =      uWorldViewProj * vec4(pos, 1.0);
 
   //vertex normal
   vec3 VertexNormal = normalize(nrm);
@@ -100,7 +101,6 @@ void main(void) {
 	//texture coords
   vTextureCoord = aTextureCoord;
 
-  gl_Position = WorldViewProj;
 }
     </script>
     <script id="jellyfish-fs" type="x-shader/x-fragment">
