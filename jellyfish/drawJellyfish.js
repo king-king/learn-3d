@@ -98,34 +98,25 @@ function JellyfishInstance( pos , scl , time ) {
         this.s[ 0 ].spring = 1.295 * this.scl * (2 - this.propel);
         this.s[ 0 ].update( this.pos );
         this.s[ 0 ].gravity = -0.01;
-
         M4x4.makeTranslate( this.s[ 0 ].pos , joint0 );
         M4x4.mul( joint0 , this.s[ 0 ].lookat , joint0 );
         M4x4.scale1( this.scl , joint0 , joint0 );
 
-        for ( j = 1; j <= 3; j++ ) {
-            this.s[ j ].spring = 2.95 * this.scl;
-            this.s[ j ].update( this.s[ j - 1 ].pos );
-            this.s[ j ].gravity = -0.02;
-            if ( j == 1 ) {
-                M4x4.makeTranslate( this.s[ j ].pos , joint1 );
-                M4x4.mul( joint1 , this.s[ j ].lookat , joint1 );
-                M4x4.scale1( this.scl , joint1 , joint1 );
-                M4x4.translate3( 0 , 3 * j , 0 , joint1 , joint1 );
-            }
-            if ( j == 2 ) {
-                M4x4.makeTranslate( this.s[ j ].pos , joint2 );
-                M4x4.mul( joint2 , this.s[ j ].lookat , joint2 );
-                M4x4.scale1( this.scl , joint2 , joint2 );
-                M4x4.translate3( 0 , 3 * j , 0 , joint2 , joint2 );
-            }
-            if ( j == 3 ) {
-                M4x4.makeTranslate( this.s[ j ].pos , joint3 );
-                M4x4.mul( joint3 , this.s[ j ].lookat , joint3 );
-                M4x4.scale1( this.scl , joint3 , joint3 );
-                M4x4.translate3( 0 , 3 * j , 0 , joint3 , joint3 );
-            }
+        function setJoint( joint , obj , index ) {
+            obj.s[ index ].spring = 2.95 * obj.scl;
+            obj.s[ index ].update( obj.s[ index - 1 ].pos );
+            obj.s[ index ].gravity = -0.02;
+            M4x4.makeTranslate( obj.s[ index ].pos , joint );
+            M4x4.mul( joint , obj.s[ index ].lookat , joint );
+            M4x4.scale1( obj.scl , joint , joint );
+            M4x4.translate3( 0 , 3 * index , 0 , joint , joint );
         }
+
+        var joints = [ joint0 , joint1 , joint2 , joint3 ];
+        for ( var j = 1; j < 4; j++ ) {
+            setJoint( joints[ j ] , this , j );
+        }
+
     }
 }
 
