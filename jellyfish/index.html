@@ -59,8 +59,7 @@ void main(void) {
 
   //Vertex Animation
   float dpi = 6.2831853;
-  float pi = 3.14159265;
-  float hpi = 1.570796325;
+
   float time = mod(uCurrentJellyfishTime+aVertexPosition.y, dpi);
 
   float offset = smoothstep(0.0,1.,max(0.,-aVertexPosition.y-0.8)/10.);

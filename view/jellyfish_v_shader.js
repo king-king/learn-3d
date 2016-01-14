@@ -30,8 +30,6 @@ var v_shader =
     "void main(void) {\n" +
         //Vertex Animation
     "    float dpi = 6.2831853;\n" +
-    "    float pi = 3.14159265;\n" +
-    "    float hpi = 1.570796325;\n" +
     "    float time = mod(uCurrentJellyfishTime+aVertexPosition.y, dpi);\n" +
     "    float offset = smoothstep(0.0,1.,max(0.,-aVertexPosition.y-0.8)/10.);\n" +
     "    vec3 anim = (aVertexColor.xyz/8.0*sin(time) * (1.-offset));\n" +
