@@ -130,16 +130,16 @@ function Spring3D( xpos , ypos , zpos ) {
     this.lookat = new M4x4.$();
 
     this.update = function ( target ) {
-        V3.sub( target , this.pos , delta );
+        V3.sub( target , this.pos , delta );// 取得距离
 
-        V3.normalize( delta , deltaNorm );
-        V3.scale( deltaNorm , this.spring , deltaNorm );
-        V3.sub( delta , deltaNorm , delta );
+        V3.normalize( delta , deltaNorm );// 得到单位向量
+        V3.scale( deltaNorm , this.spring , deltaNorm );// 将单位向量缩放spring倍
+        V3.sub( delta , deltaNorm , delta );// 得到处理前与处理后之间的差
 
-        V3.scale( delta , this.stiffness , force );
+        V3.scale( delta , this.stiffness , force );// 得到力
         force[ 1 ] += this.gravity;
-        V3.scale( force , 1 / this.mass , accel );
-        V3.add( force , accel , this.veloc );
+        V3.scale( force , 1 / this.mass , accel );// 得到加速度
+        V3.add( force , accel , this.veloc );// 得到速度
         V3.scale( this.veloc , this.damping , this.veloc );
         V3.add( this.pos , this.veloc , this.pos );
 
