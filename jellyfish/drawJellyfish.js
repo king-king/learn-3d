@@ -76,8 +76,7 @@ function JellyfishInstance( pos , scl , time ) {
     this.s = {};
 
     // todo:初步把这里的spring当成弹力理解
-    this.s[ 0 ] = new Spring3D( pos[ 0 ] , pos[ 1 ] - 1 , pos[ 2 ] );
-    for ( var j = 1; j <= 3; j++ ) {
+    for ( var j = 0; j <= 3; j++ ) {
         this.s[ j ] = new Spring3D( pos[ 0 ] , pos[ 1 ] - 1 - j * this.scl , pos[ 2 ] );
     }
 
