@@ -1047,14 +1047,15 @@ var GL = (function () {
         // doesn't need to be called every frame, only needs to be done when the data
         // changes.
         compile : function () {
+            var buffer;
             for ( var attribute in this.vertexBuffers ) {
-                var buffer = this.vertexBuffers[ attribute ];
+                buffer = this.vertexBuffers[ attribute ];
                 buffer.data = this[ buffer.name ];
                 buffer.compile();
             }
 
             for ( var name in this.indexBuffers ) {
-                var buffer = this.indexBuffers[ name ];
+                buffer = this.indexBuffers[ name ];
                 buffer.data = this[ name ];
                 buffer.compile();
             }
