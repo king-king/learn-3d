@@ -580,6 +580,7 @@ Cube.prototype.intersect = function ( origin , ray ) {
     return Cube.intersect( origin , ray , this.getMinCorner() , this.getMaxCorner() );
 };
 
+// 这段代码判断射线和立方体是否相交，看不懂原理
 Cube.intersect = function ( origin , ray , cubeMin , cubeMax ) {
     var tMin = cubeMin.subtract( origin ).componentDivide( ray );
     var tMax = cubeMax.subtract( origin ).componentDivide( ray );
