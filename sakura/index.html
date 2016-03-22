@@ -540,14 +540,12 @@ void main(void) {
         gl.useProgram( prog );
         for ( var attr in prog.attributes ) {
             gl.enableVertexAttribArray( prog.attributes[ attr ] );
-            ;
         }
     }
 
     function unuseShader( prog ) {
         for ( var attr in prog.attributes ) {
             gl.disableVertexAttribArray( prog.attributes[ attr ] );
-            ;
         }
         gl.useProgram( null );
     }
@@ -681,7 +679,7 @@ void main(void) {
             tmpv3.y = symmetryrand() * 0.2 - 1.0;
             tmpv3.z = symmetryrand() * 0.3 + 0.5;
             Vector3.normalize( tmpv3 );
-            tmpv = 2.0 + Math.random() * 1.0;
+            tmpv = 2.0 + Math.random() ;
             tmpprtcl.setVelocity( tmpv3.x * tmpv , tmpv3.y * tmpv , tmpv3.z * tmpv );
 
             //rotation
@@ -731,9 +729,9 @@ void main(void) {
                 prt.euler[ cmp ] += PI2;
             }
         };
-
-        for ( var i = 0; i < pointFlower.numFlowers; i++ ) {
-            var prtcl = pointFlower.particles[ i ];
+        var prtcl,i;
+        for (   i = 0; i < pointFlower.numFlowers; i++ ) {
+              prtcl = pointFlower.particles[ i ];
             prtcl.update( timeInfo.delta , timeInfo.elapsed );
             repeatPos( prtcl , 0 , pointFlower.area.x );
             repeatPos( prtcl , 1 , pointFlower.area.y );
@@ -759,8 +757,8 @@ void main(void) {
         var ipos = pointFlower.positionArrayOffset;
         var ieuler = pointFlower.eulerArrayOffset;
         var imisc = pointFlower.miscArrayOffset;
-        for ( var i = 0; i < pointFlower.numFlowers; i++ ) {
-            var prtcl = pointFlower.particles[ i ];
+        for (   i = 0; i < pointFlower.numFlowers; i++ ) {
+              prtcl = pointFlower.particles[ i ];
             pointFlower.dataArray[ ipos ] = prtcl.position[ 0 ];
             pointFlower.dataArray[ ipos + 1 ] = prtcl.position[ 1 ];
             pointFlower.dataArray[ ipos + 2 ] = prtcl.position[ 2 ];
@@ -796,7 +794,7 @@ void main(void) {
         gl.vertexAttribPointer( prog.attributes.aMisc , 2 , gl.FLOAT , false , 0 , pointFlower.miscArrayOffset * Float32Array.BYTES_PER_ELEMENT );
 
         // doubler
-        for ( var i = 1; i < 2; i++ ) {
+        for (   i = 1; i < 2; i++ ) {
             var zpos = i * -2.0;
             pointFlower.offset[ 0 ] = pointFlower.area.x * -1.0;
             pointFlower.offset[ 1 ] = pointFlower.area.y * -1.0;
@@ -969,8 +967,8 @@ void main(void) {
 
         // make bloom
         for ( var i = 0; i < 2; i++ ) {
-            var p = 1.5 + 1 * i;
-            var s = 2.0 + 1 * i;
+            var p = 1.5 +   i;
+            var s = 2.0 +  i;
             bindRT( renderSpec.wHalfRT1 , true );
             useEffect( effectLib.dirBlur , renderSpec.wHalfRT0 );
             gl.uniform4f( effectLib.dirBlur.program.uniforms.uBlurDir , p , 0.0 , s , 0.0 );
